@@ -136,3 +136,7 @@ class QualityControlAccessor:
                         pct_hist_flag = len(self.hist_indice)/self._obj.size)
 
         return pd.Series(out_dict, name=self._obj.name)
+
+@pd.api.extensions.register_dataframe_accessor("qc")
+class QualityControlDataFrameAccessor(QualityControlAccessor):
+    pass
