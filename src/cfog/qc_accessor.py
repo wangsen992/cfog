@@ -89,7 +89,7 @@ class QualityControlAccessor:
     # Amplitude resolution and dropouts detection
     @property
     def hist_indice(self):
-        if not hasattr(self, '_hist_indice'):
+        if not hasattr(self, '_hist_indice') or self.option_is_updated:
             self._compute_hist_indice(inplace=True)
         return self._hist_indice
 
