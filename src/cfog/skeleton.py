@@ -5,7 +5,7 @@ console script. To run this script uncomment the following lines in the
 [options.entry_points] section in setup.cfg:
 
     console_scripts =
-         fibonacci = cfog.skeleton:run
+         fibonacci = cfog_siop1.skeleton:run
 
 Then run `python setup.py install` which will install the command `fibonacci`
 inside your current environment.
@@ -19,7 +19,7 @@ import argparse
 import sys
 import logging
 
-from cfog import __version__
+from cfog_siop1 import __version__
 
 __author__ = "Sen Wang"
 __copyright__ = "Sen Wang"
@@ -41,6 +41,7 @@ def fib(n):
     a, b = 1, 1
     for i in range(n-1):
         a, b = b, a+b
+    print("This is to test if there is autoupload")
     return a
 
 
@@ -58,7 +59,7 @@ def parse_args(args):
     parser.add_argument(
         "--version",
         action="version",
-        version="cfog {ver}".format(ver=__version__))
+        version="cfog_siop1 {ver}".format(ver=__version__))
     parser.add_argument(
         dest="n",
         help="n-th Fibonacci number",
