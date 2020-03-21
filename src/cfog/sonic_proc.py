@@ -5,8 +5,8 @@ import scipy.interpolate as interp
 import scipy.fftpack as fft
 import ipdb as debugger
 
+from pyqc import *
 from .utils import *
-from .qc_accessor import QualityControlAccessor
 
 
 @pd.api.extensions.register_dataframe_accessor("sonic")
