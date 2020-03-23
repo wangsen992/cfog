@@ -68,7 +68,7 @@ def compute_thermo_from_sonic(Ts_K, P, H2O):
                     'T' : T}
 
 def wind_dir(u, v):
-    return np.degrees(np.atan2(-v, -u)) % 360
+    return np.degrees(np.arctan2(-u, -v)) % 360
 
 def rotate_uvw(u, v, w): 
     '''Set crosswind(v) and vertical (w) velocity mean to zero through double
