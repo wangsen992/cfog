@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 from pkg_resources import get_distribution, DistributionNotFound
+from . import utils
+from . import sonic_proc
+from . import radiosonde_proc
+
 
 try:
     # Change here if project is renamed and does not equal the package name
