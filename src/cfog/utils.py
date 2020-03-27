@@ -3,7 +3,6 @@ import numpy as np
 import pandas as pd
 import scipy.interpolate as interp
 import scipy.fftpack as fft
-import ipdb as debugger
 
 def compute_thermo_from_sonic(Ts_K, P, H2O):
     '''Calculate other thermodynamics properties from sonic temperature,
@@ -19,15 +18,7 @@ def compute_thermo_from_sonic(Ts_K, P, H2O):
 
         This method solves for virtual temperature from sonic temperature by
         iteratively calculating dry air density, vapor pressure.
-        '''
-
-    # Enforce the no null data requirements of the function. 
-#    if np.isnan(Ts_K).sum() or \
-#       np.isnan(P).sum() or \
-#       np.isnan(H2O).sum():
-
-#        raise ValueError("Does not accept ndarrays with NaN values.")
-
+    '''
     # Required constants
     Rd = 287.04 # Gas constant for dry air [JK-1kg-1]
 
@@ -57,7 +48,7 @@ def compute_thermo_from_sonic(Ts_K, P, H2O):
         T = T_K - 273.15
         es = 6.11 * 10 ** (7.5*T / (T + 237.3)) * 100
         q = r / (1+r)
-        return {'rho_d':rho_d,
+        result= {'rho_d':rho_d,
                     'r' : r,
                     'q' : q,
                     'e' : e,
@@ -66,13 +57,13 @@ def compute_thermo_from_sonic(Ts_K, P, H2O):
                     'Tv_K' : Tv_K_new,
                     'T_K' : T_K,
                     'T' : T}
+        return pd.DataFrame(result)
 
 def wind_dir(u, v):
     return np.degrees(np.arctan2(-u, -v)) % 360
 
 def rotate_uvw(u, v, w): 
-    '''Set crosswind(v) and vertical (w) velocity mean to zero through double
-    rotation.
+    '''Set crosswind(v) and vertical (w) velocity mean to zero through double rotation.
 
     Parameters:
         u, v, w:    ndarrays(n,) velocity components [m/s]
@@ -145,7 +136,10 @@ def series_rolling(x, window, stride):
 
 def compute_cross_spectra(input_df, x_name, y_name, block=None,
                           interpolate='zero'):
-# Translate timestamp to distance with mean wind speed
+    '''Compute cross spectra of two variables through multiplication in Fourier
+    space
+    '''
+    # Translate timestamp to distance with mean wind speed
     try:
         U = np.abs(input_df['u'].mean())
     except KeyError:
