@@ -157,7 +157,7 @@ class EddyCovarianceAccessor:
         if not all([name in self._obj for name in ['T','q']]):
             raise ValueError("Thermodynamic properties have not been calculated.")
 
-        raw_df = self._obj[['u','v','w','T','q']]
+        raw_df = self._obj[['u','v','w','T','q','Ts_K','H2O']]
         fluc_df = raw_df.sub(raw_df.mean(axis=0), axis=1)
         cov_df = fluc_df.cov()
         cov_results = pd.Series(dict(uu=cov_df.loc['u','u'],
@@ -167,6 +167,8 @@ class EddyCovarianceAccessor:
                                      uw=cov_df.loc['u','w'],
                                      vw=cov_df.loc['v','w'],
                                      Tw=cov_df.loc['T','w'],
+                                     Ts_Kw=cov_df.loc['Ts_K','w'],
+                                     H2Ow=cov_df.loc['H2O', 'w'], 
                                      qw=cov_df.loc['q','w'],
                                      tke=0.5 * \
                                       np.mean((fluc_df[['u','v','w']] ** 2).sum(axis=1))))
