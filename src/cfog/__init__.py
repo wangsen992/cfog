@@ -3,6 +3,7 @@ from pkg_resources import get_distribution, DistributionNotFound
 from . import utils
 from . import sonic_proc
 from . import radiosonde_proc
+from . import plotter
 
 
 try:
