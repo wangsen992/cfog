@@ -4,6 +4,8 @@ import pandas as pd
 import scipy.interpolate as interp
 import scipy.fftpack as fft
 
+import logging
+
 def compute_thermo_from_sonic(Ts_K, P, H2O):
     '''Calculate other thermodynamics properties from sonic temperature,
     pressure and vapor content.
@@ -36,11 +38,11 @@ def compute_thermo_from_sonic(Ts_K, P, H2O):
         Tv_K_new = Ts_K + 0.02 * e / 100
         iter_count += 1
         err = np.nansum(np.abs(Tv_K_new - Tv_K_old))
-        print("Iteration {i}: Current residual = {res}"\
-              .format(i=iter_count, res=err))
+        logging.debug("Iteration {i}: Current residual = {res}"\
+                      .format(i=iter_count, res=err))
         Tv_K_old = Tv_K_new.copy()
         if iter_count > max_iter:
-            print("Max iteration number exceeded.  Break.")
+            logging.debug("Max iteration number exceeded.  Break.")
             break
     # Output the required variables after completion of while-loop 
     else:
@@ -172,13 +174,13 @@ def compute_cross_spectra(input_df, x_name, y_name, block=None,
     N = x.size
     L = r.max() / (2 * np.pi)
     if block is None:
-        print("block fft not init...")
+        logging.debug("block fft not init...")
         # Compute fourier transform
         x_hat, y_hat = 2 * np.pi * L / N * fft.fft(np.vstack([x,y]))
         Phi_xy = x_hat * np.conjugate(y_hat) / (4 * np.pi**2 * L)  # 2piL to adjust for deconvolution, same below
         k = np.arange(N) / L
     else:
-        print("block fft init...")
+        logging.debug("block fft init...")
         rmd = N%block
         if rmd == 0:
             x_tmp = x.reshape(block, -1)
