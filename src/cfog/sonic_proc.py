@@ -7,7 +7,6 @@ import scipy.fftpack as fft
 from pyqc import *
 from .utils import *
 
-
 @pd.api.extensions.register_dataframe_accessor("sonic")
 class SonicAccessor:
     def __init__(self, pandas_obj):
@@ -137,7 +136,7 @@ class EddyCovarianceAccessor:
         result_dict = compute_thermo_from_sonic(Ts_K=self._obj['Ts_K'].values,
                                                      P=P_upsample.values,
                                                      H2O=self._obj['H2O'].values)
-        result= pd.DataFrame(result_dict, index=self._obj.index)
+        result= result_dict.set_index(self._obj.index)
         
         if inplace == True:
             self._obj = pd.concat([self._obj, result], axis=1)
