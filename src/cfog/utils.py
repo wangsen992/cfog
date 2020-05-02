@@ -201,3 +201,6 @@ def fit_epsilon(Ek, k, alpha=1.7, k_range=(1,50)):
     '''Fit for epsilon based on -5/3 power law'''
     epsilon = np.exp(3/2 * (np.log(Ek) + 5/3 * np.log(k) - np.log(alpha)))
     return epsilon[(k > k_range[0]) & (k < k_range[1])].mean()
+
+def compute_kolmogov_spectrum(k, epsilon):
+    return 1.7 * epsilon ** (2/3) * k ** (-5/3)
