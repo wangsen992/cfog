@@ -146,7 +146,7 @@ def compute_cross_spectra(input_df, x_name, y_name, block=None,
         U = np.abs(input_df['u'].mean())
     except KeyError:
         raise KeyError("along wind component u must be present")
-    
+ 
     if input_df.shape[0] < 100:
         return None
         
@@ -194,7 +194,7 @@ def compute_cross_spectra(input_df, x_name, y_name, block=None,
         Phi_xy = np.mean(xy_hat[:block, :] * np.conjugate(xy_hat[block:, :]), axis=0) / block/ (4 * np.pi**2 * L)
         k = np.arange(NN) / L_block
 
-    return pd.Series(Phi_xy[1:], index=k[1:], name=x_name+y_name+' spectra')
+    return pd.Series(Phi_xy[1:].real, index=k[1:], name=x_name+y_name+' spectra')
 
 
 def fit_epsilon(Ek, k, alpha=1.7, k_range=(1,50)):
