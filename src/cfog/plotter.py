@@ -17,7 +17,7 @@ def spectrum_plotter(ax, phi, eddyco, *args, **kwargs):
     ax_kwargs = {'xlabel': "2 pi / wavelength",
          'title' : f"E(k), tke={tke:4.3f}, dissipation={epsilon:4.3f}"}
     ax_kwargs.update(kwargs)
-    ax.set(ax_kwargs)
+    ax.set(**ax_kwargs)
     ax.legend(loc='lower left')
     ax.grid(True, 'both', 'both')
     return ax
