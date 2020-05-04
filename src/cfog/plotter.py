@@ -22,3 +22,16 @@ def spectrum_plotter(ax, phi, eddyco, *args, **kwargs):
     ax.grid(True, 'both', 'both')
     return ax
 
+def sonic_plotter(ax_00, ax_01, sonic_df):
+    sonic_df[['u','v','w']].plot(ax=ax_00)
+    ax_00.legend(loc='upper left')
+    ax_00.grid(True,'both','both')
+#    sonic_df['Ts_K'].plot(ax=ax_01, label='Ts_K')
+#    sonic_df['H2O'].plot(ax=ax_01, secondary_y=True, mark_right=True)
+    ax_01 = sonic_df[['Ts_K', 'H2O']].plot(ax=ax_01, secondary_y=['H2O'])
+    ax_01.set_ylabel('Ts_K');
+    ax_01.right_ax.set_ylabel("H2O")
+    ax_01.legend(loc='upper left')
+    ax_01.grid(True,'both','both')
+                                        
+    return ax_00, ax_01
