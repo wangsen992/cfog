@@ -29,17 +29,15 @@ def summarize_sonic(df, P=1.01e5, block = 50):
     if isinstance(P, (float, int)):
         P = pd.Series(np.full(df.shape[0], P), index=df.index)
 
-    if not all(df[['v','w']].mean().abs() < 1e-3):
-        raise ValueError("Input sonic df must be rotated first, use "
-                         "df.sonic.rotate_uvw()")
 
     # QC 
-    df_adjusted = df.qc.despike()
+    df_adjusted = df.sonic.rotate_uvw().qc.despike()
     result['qc'] = df_adjusted.qc.describe()
     result['stationarity_measure'] = df_adjusted.sonic.mean_stationarity_values
     df_thermo = df_adjusted.eddyco.compute_thermo_properties(P)
     result['eddyco'] = df_thermo.eddyco.cov_ra
     U = np.abs(df_adjusted['u'].mean())
+    Udir = wind_dir(df['u'].mean(), df['v'].mean())
 
     # Spectrum
     phi_dict = {}
@@ -62,9 +60,10 @@ def summarize_sonic(df, P=1.01e5, block = 50):
     u_rms = np.sqrt(result['eddyco']['uu'])
     result['eddyco']['lam_g'] = np.sqrt(15 * nu * u_rms**2 / \
                                         result['eddyco']['epsilon'])
-    result['meta'] = dict(time=time, U=U,
+    result['meta'] = dict(time=time, U=U,Udir=Udir,
                           tke=result['eddyco']['tke'],
                           epsilon=result['eddyco']['epsilon'])
+    result['df_adjusted'] = df_adjusted
 
     return result 
 
