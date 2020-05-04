@@ -83,6 +83,13 @@ def extract_var(sl, v):
                             index=z,
                             columns=t_list)
 
+def plot_vertical(sonde_df, ax=None, *args, **kwargs):
+    if ax is None:
+        fig, ax = plt.subplots()
+    for t in sonde_df.columns:
+        ax.plot(sonde_df[t].values, sonde_df.index, label=t)
+        ax.legend()
+    return ax
 
 class Radiosonde(pd.DataFrame):
 
