@@ -82,10 +82,10 @@ def rotate_uvw(u, v, w):
                               [-np.sin(b), 0, np.cos(b)]])
 
     u_mean0, v_mean0 = np.nanmean(u), np.nanmean(v)
-    alpha_dr = np.arctan(v_mean0 / u_mean0)
+    alpha_dr = np.arctan2(v_mean0 , u_mean0)
     u_1, v_1, w_1 = R_01(alpha_dr) @ np.array([u,v,w])
     u_mean1, w_mean1 = np.nanmean(u_1), np.nanmean(w_1)
-    beta_dr = np.arctan(w_mean1 / u_mean1)
+    beta_dr = np.arctan2(w_mean1 , u_mean1)
     u_2, v_2, w_2 = R_12(beta_dr) @ np.array([u_1,v_1,w_1])
     return u_2, v_2, w_2
 
