@@ -35,3 +35,11 @@ def sonic_plotter(ax_00, ax_01, sonic_df):
     ax_01.grid(True,'both','both')
                                         
     return ax_00, ax_01
+
+def add_viz(ax, viz_ser):
+    viz_ser.plot(secondary_y=True, ax=ax, color='k', ls='--', alpha=0.3)
+    ax.grid(True, 'both', 'both')
+    ax.right_ax.set(yscale='log')
+    ax.right_ax.grid(True, 'both', 'both', color='k', ls='--',
+                     alpha=0.1)
+    return ax
