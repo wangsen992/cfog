@@ -4,6 +4,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 
 import scipy.optimize as optimize
+from scipy.interpolate import interp1d
 
 R = 287.058; Cpd = 1005.7; Cpv = 1875; g = 9.81 # define constants
 Lw = lambda T: (2.501 - 0.00237 * T) * 10**6
@@ -65,6 +66,22 @@ def gradx(f, x):
     f_grad = (h1 - h0)/(h1 * h0) * f_x0 \
              + 1 / (h0 + h1) * (h0/h1 * f_xe - h1/h0 * f_xw)
     return f_grad, x[1:-2]
+
+def extract_var(sl, v):
+            
+    z_max = min(s.z.max() for s in sl)
+    z_min = max(s.z.min() for s in sl)
+    z = np.linspace(z_min, z_max, int((z_max-z_min)//1))
+    
+    v_list = []
+    t_list = []
+    for s in sl:
+        f = interp1d(s.index, s[v].values)
+        v_list.append(f(z))
+        t_list.append(s.timestamp.iloc[0].strftime("%m-%d %H-%M"))
+        return pd.DataFrame(np.array(v_list).T,
+                            index=z,
+                            columns=t_list)
 
 
 class Radiosonde(pd.DataFrame):
