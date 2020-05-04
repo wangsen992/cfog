@@ -4,6 +4,7 @@ from . import utils
 from . import sonic_proc
 from . import radiosonde_proc
 from . import plotter
+from . import tools
 
 
 try:
