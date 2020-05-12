@@ -67,21 +67,17 @@ def gradx(f, x):
              + 1 / (h0 + h1) * (h0/h1 * f_xe - h1/h0 * f_xw)
     return f_grad, x[1:-2]
 
-def extract_var(sl, v):
+def extract_var(sl, v, resolution=1.):
             
-    z_max = min(s.z.max() for s in sl)
-    z_min = max(s.z.min() for s in sl)
-    z = np.linspace(z_min, z_max, int((z_max-z_min)//1))
-    
-    v_list = []
-    t_list = []
+    out_dict = {}
     for s in sl:
+        z = np.arange(np.ceil(s.index.min()),
+                      np.floor(s.index.max()),
+                      resolution)
         f = interp1d(s.index, s[v].values)
-        v_list.append(f(z))
-        t_list.append(s.timestamp.iloc[0].strftime("%m-%d %H-%M"))
-    return pd.DataFrame(np.array(v_list).T,
-                        index=z,
-                        columns=t_list)
+        out_dict[s.timestamp.iloc[0].strftime("%m-%d %H-%M")] = \
+                pd.Series(f(z), index=z)
+    return pd.DataFrame(out_dict)
 
 def plot_vertical(sonde_df, ax=None, *args, **kwargs):
     if ax is None:
