@@ -79,9 +79,9 @@ def extract_var(sl, v):
         f = interp1d(s.index, s[v].values)
         v_list.append(f(z))
         t_list.append(s.timestamp.iloc[0].strftime("%m-%d %H-%M"))
-        return pd.DataFrame(np.array(v_list).T,
-                            index=z,
-                            columns=t_list)
+    return pd.DataFrame(np.array(v_list).T,
+                        index=z,
+                        columns=t_list)
 
 def plot_vertical(sonde_df, ax=None, *args, **kwargs):
     if ax is None:
@@ -114,6 +114,8 @@ class Radiosonde(pd.DataFrame):
         self['e'] = self['RH'] * self['es'] / 100 # vapor pres
         self['r'] = 0.622 * self['e'] / self['P'] # mixing ratio (1000 to convert to kgkg-1)
         self['q'] = self['r'] / (1 + self['r'])
+        self['T_v_K'] = self['T_K'] * (1 + 0.61 * self['q'])
+        self['T_v'] = self['T_v_K'] - 273.15
 
         # moist static energy (no contribution from water droplets)
         # Note: only 1.2% drop of g at 40km, so g taken as constant
@@ -153,10 +155,12 @@ class Radiosonde(pd.DataFrame):
         Compute vertical buoyancy gradient, velocity gradient and gradient
         Richardson number
         '''
-        self['dThetadz'] = self._ddz('theta_e', ddz_smooth_window)
+        self['dTheta_edz'] = self._ddz('theta_e', ddz_smooth_window)
+        self['dTheta_vdz'] = self._ddz('theta_v', ddz_smooth_window)
         self['dUdz'] = self._ddz('U', ddz_smooth_window)
-        self['dbdz'] = g / self['theta_e'] * self['dThetadz']
-        self['Ri_g'] = self['dbdz'] / self['dUdz'] ** 2
+        self['dbdz'] = g / self['theta_e'] * self['dTheta_edz']
+        self['Ri_g'] = (g / self['T_v_K'] * self['dTheta_vdz']) \
+                    / self['dUdz'] ** 2
 
     def _ddz(self, varName, ddz_smooth_window=10):
         ser_tmp_sm = self[varName].rolling(ddz_smooth_window).mean()
