@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from .utils import compute_kolmogov_spectrum
+from .utils import *
 
 def spectrum_plotter(ax, phi, eddyco, *args, **kwargs):
 
@@ -43,3 +43,37 @@ def add_viz(ax, viz_ser):
     ax.right_ax.grid(True, 'both', 'both', color='k', ls='--',
                      alpha=0.1)
     return ax
+
+# Section: For radiosonde plots (verticla profile) 
+def vertical_subplotter(var_df, axes=None, 
+                        y_spines=True, ylabel=None,
+                        **kwargs):
+    N = var_df.shape[1]
+    if axes is None:
+        fig, axes = plt.subplots(ncols=N)
+    for i in range(N):
+        axes[i].plot(var_df.iloc[:, i].values,
+                     var_df.index,
+                     **kwargs)
+        axes[i].set(title=var_df.columns[i])
+    if ylabel:
+        axes[0].set(ylabel=ylabel)
+    adjust_spines(axes[0], ['left', 'bottom'])
+    spine_option = {True: ['left', 'bottom'],
+                    False: ['bottom']}
+    for i in range(1, N):
+        adjust_spines(axes[i], spine_option[y_spines])
+    return axes
+
+def vertical_subplot_set(axes, grid=None, **kwargs):
+    N = len(axes)
+    for i in range(N):
+        axes[i].set(**kwargs)
+    for i in range(N):
+        axes[i].set(**kwargs)
+        if grid:
+            axes[i].grid(True, 'both', 'both')
+    return axes
+            
+
+
