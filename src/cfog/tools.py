@@ -56,9 +56,9 @@ def summarize_sonic(df, P=1.01e5, block = 50):
                                               phi.index.to_numpy(),
                                               k_range=(k_min, k_max))
     # Taylor Microscale
-    nu = 1.48e-5
-    u_rms = np.sqrt(result['eddyco']['uu'])
-    result['eddyco']['lam_g'] = np.sqrt(15 * nu * u_rms**2 / \
+    nu = 1.81e-5
+    u_rms_sqr = np.sqrt(result['eddyco']['uu'])
+    result['eddyco']['lam_g'] = np.sqrt(15 * nu * u_rms_sqr / \
                                         result['eddyco']['epsilon'])
     result['meta'] = dict(time=time, U=U,Udir=Udir,
                           tke=result['eddyco']['tke'],
@@ -66,10 +66,6 @@ def summarize_sonic(df, P=1.01e5, block = 50):
     result['df_adjusted'] = df_adjusted
 
     return result 
-
-
-
-
 
 # A wavelet computation function. 
 def wavelet_analysis(df):
